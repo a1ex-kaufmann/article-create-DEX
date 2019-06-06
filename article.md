@@ -33,6 +33,7 @@ getAccount(...) - вызывает текущий баланс аккаунта
 ## Разработка DApp (Туториал)
 
 Проект DApp вы можете найти [здесь](https://github.com/ZhdanoffAlexey/cryptocurrency-exchanger-hedera).
+
 Скачать Hedera JavaScript API вы можете [здесь](https://github.com/xclbrio/hederajs)
 
 ### Структура DApp и смарт-контракт
@@ -70,7 +71,7 @@ DApp будет представлять из себя SC на Solidity и front
 		}
 ```
 2) Исполнить уже существующий одрер;
-	```
+```
 	function trade(uint order) public {
 		tradeBalances(dataArray[order][1], dataArray[order][2], dataArray[order][3], dataArray[order][4], addressesArray[order]);
 		dataArray[order][0] = 2;
@@ -83,7 +84,7 @@ DApp будет представлять из себя SC на Solidity и front
 		tokens[user][tokenGive] = safeSub(tokens[user][tokenGive], amountGive);
 		tokens[msg.sender][tokenGive] = safeAdd(tokens[msg.sender][tokenGive], amountGive);
 	}
-	```
+```
 3) Отменить собственный ордер.
 
 У пользователя для работы с обменником будет собственный кошёлёк. Таким образом, сюда добавятся функции:
