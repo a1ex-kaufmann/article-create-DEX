@@ -30,7 +30,7 @@ getAccount(...) - вызывает текущий баланс аккаунта
 
 Возможность подписи на события пока не поддерживается в HH, однако с появлением mirror nodes будет такая возможность.
 
-## Разработка DApp (Туториал)
+## Разработка DApp
 
 Проект DApp вы можете найти [здесь](https://github.com/ZhdanoffAlexey/cryptocurrency-exchanger-hedera).
 
@@ -123,7 +123,7 @@ excalibur.createFileFromFile(userAccount,userPrivateKey,pathToFile)
 ```
 ВАЖНО! У файлового сервиса Hedera Hashgraph существует ограничение веса файлов в 6кб. Учтите данное ограничение, очень часто вес байткода получается больше заданного лимита. В таком случае платформа позволяет загружать файл по частям, используя метод: append_file(userAccount, userPrivateKey, fileID, appendText)
 
-В случае успеха функция вернёт специальный номер файла (например, 0.0.1035).
+___В случае успеха функция вернёт специальный номер файла (например, 0.0.1035).___
 
 3) Создать смарт-контракт, ссылаясь на номер файла с байткодом, уже находящегося в сети:
 ```
@@ -142,7 +142,7 @@ const gasValue = "100000";
 
 createContract(userAccount, userPrivateKey, fileID, gasValue)
 ```
-В случае успеха возвращается номер смарт-контракта (например, 0.0.1536).
+___В случае успеха возвращается номер смарт-контракта (например, 0.0.1536)___
 
 
 ### Вызов метода SC
@@ -176,7 +176,7 @@ const amount = "0";
 excalibur.callContract(userAccount, userPrivateKey, contractID, gasValue, pathToAbi, methodName, amount, arguments);
 ```
 
-### front-end Dapp
+### Dapp frontend 
 
 Вот как выглядит фронтенд обменника, созданный на скорую руку 
 
