@@ -20,11 +20,13 @@
 
 На данный момент реализован минимальный функционал для разработки DApp:
 
+```
 createFileFromFile(...) - загружает файл на файловый сервис HH
 appendFile(...) - дописать файл, уже расположенный в сервисах HH
 createContract(...) - создаёт смарт-контракт, ссылаясь на байт-код
 callContract(...) - вызывает метод уже запущенного смарт-контракта
 getAccount(...) - вызывает текущий баланс аккаунта
+```
 
 Возможность подписи на события пока не поддерживается в HH, однако с появлением mirror nodes будет такая возможность.
 
@@ -42,8 +44,8 @@ DApp будет представлять из себя SC на Solidity и front
 
 В нашем обменнике пользователь сможет:
 1) Создать ордер обмена одной криптовалюты на другую. Из-за невозможности подписываться на события, реализовать взаимодействие с DApp будет гораздо сложнее. Высокая скорость осущестления транзакций в Hedera Hashgraph позволяет обойти эту проблему. Хранить ордера будем в двумерном массиве.
-Логика взаимодействия с ордерами также нетривиальна: пользователь вызывает функцию создания ордера, передавая (tokenGet, amountGet, tokenGive, amountGive) в метод. Для исполнения ордера необходимо указать уникальное значение ордера либо через заранее сгенерированный hash по его полям, либо через позицию в массиве (для простоты эксперимента я взял последний вариант, однако рекомендую первый).
-
+Логика взаимодействия с ордерами также нетривиальна: пользователь вызывает функцию создания ордера, передавая `(tokenGet, amountGet, tokenGive, amountGive)` в метод. Для исполнения ордера необходимо указать уникальное значение ордера либо через заранее сгенерированный hash по его полям, либо через позицию в массиве (для простоты эксперимента я взял последний вариант, однако рекомендую первый).
+```
 	// создание ордера
 	// dataArray[...][0] - статус ордера (0 - не существует, 1 - открыт, 2 - закрыт)
 	// dataArray[...][1] - номер токена, который покупаем (параметр tokenGet)
@@ -66,9 +68,9 @@ DApp будет представлять из себя SC на Solidity и front
 		dataArray.push(tempArray);
 		return index;
 		}
-
+```
 2) Исполнить уже существующий одрер;
-	
+	```
 	function trade(uint order) public {
 		tradeBalances(dataArray[order][1], dataArray[order][2], dataArray[order][3], dataArray[order][4], addressesArray[order]);
 		dataArray[order][0] = 2;
@@ -81,7 +83,7 @@ DApp будет представлять из себя SC на Solidity и front
 		tokens[user][tokenGive] = safeSub(tokens[user][tokenGive], amountGive);
 		tokens[msg.sender][tokenGive] = safeAdd(tokens[msg.sender][tokenGive], amountGive);
 	}
-
+	```
 3) Отменить собственный ордер.
 
 У пользователя для работы с обменником будет собственный кошёлёк. Таким образом, сюда добавятся функции:
@@ -93,17 +95,17 @@ DApp будет представлять из себя SC на Solidity и front
 ### Подготовка Hedera JavaScript API
 Для компиляции Rust SDK nightly-версия Rust и установленный Protocol Buffers.
 Выполним компиляцию:
-
+```
 cd rust_hedera_sdk
 cargo build
-
+```
 ### Деплой SC Dapp
 
 Отлично, код смарт-контракта написан, а API готов к использованию. Как задеплоить контракт в Hedera Hashgraph?
 Разберём последовательность действий для деплоя SC. Выполнять процедуры ниже будем из node.js:
 1) Сгенерировать ABI для вызова методов и байткод контракта (через Truffle или Remix).
 2) Загрузить байт-код контракта на платформу HH как .bin файл. 
-
+```
 const Excalibur_ = require("./lib/JavaScript/Excalibur");
 
 // set node settings
@@ -118,13 +120,13 @@ const userPrivateKey = "***";
 const pathToFile = "smartContracts/excalibur.bin";
 
 excalibur.createFileFromFile(userAccount,userPrivateKey,pathToFile)
-
+```
 ВАЖНО! У файлового сервиса Hedera Hashgraph существует ограничение веса файлов в 6кб (ранее было заявлено 4кб, на практике оказалось другое значение). Учтите данное ограничение, очень часто вес байткода получается больше заданного лимита. В таком случае платформа позволяет загружать файл по частям, используя метод: append_file(userAccount, userPrivateKey, fileID, appendText)
 
 В случае успеха функция вернёт специальный номер файла (например, 0.0.1035).
 
 3) Создать смарт-контракт, ссылаясь на номер файла с байткодом, уже находящегося в сети:
-
+```
 // set node settings
 const nodeAddress = "t1.hedera.com:50000";
 const nodeAccount = "0.0.3";
@@ -139,7 +141,7 @@ const fileID = "0.0.****";
 const gasValue = "100000";
 
 createContract(userAccount, userPrivateKey, fileID, gasValue)
-
+```
 В случае успеха возвращается номер смарт-контракта (например, 0.0.1536).
 
 
@@ -147,7 +149,7 @@ createContract(userAccount, userPrivateKey, fileID, gasValue)
 
 Для работы со SC необходим его Abi.
 Вызовем метод запущенного нами смарт-контракта. Например, исполним существующий ордер:
-
+```
 // set node settings
 const nodeAddress = "t1.hedera.com:50000";
 const nodeAccount = "0.0.3";
@@ -172,13 +174,13 @@ const arguments = "6";
 const amount = "0";
 
 excalibur.callContract(userAccount, userPrivateKey, contractID, gasValue, pathToAbi, methodName, amount, arguments);
-
+```
 
 ### front-end Dapp
 
 Вот как выглядит фронтенд обменника, созданный на скорую руку 
 
-(скрин)
+![img2](img/3.png)
 
 
 
