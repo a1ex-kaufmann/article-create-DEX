@@ -148,7 +148,8 @@ _В случае успеха возвращается номер смарт-к�
 ### Вызов метода SC
 
 Для работы со SC необходим его Abi.
-Вызовем метод запущенного нами смарт-контракта. Например, исполним существующий ордер:
+Вызовем метод запущенного нами смарт-контракта. Создадим новый ордер
+
 ```
 // set node settings
 const nodeAddress = "t1.hedera.com:50000";
@@ -165,6 +166,35 @@ const gasValue = "100000";
 const pathToAbi = "smartContracts/excalibur.abi"
 
 const methodName = "order";
+
+// номер ордера, который мы хотим исполнить
+// меняем 1 hbar на 2 ед.токена №2
+const arguments = "0,1,1,2";
+
+// amount - количество передаваемых Hbar
+// данный метод не относится к типу payable, поэтому указываем 0
+const amount = "0";
+
+excalibur.callContract(userAccount, userPrivateKey, contractID, gasValue, pathToAbi, methodName, amount, arguments);
+```
+
+Теперь исполним существующий ордер:
+```
+// set node settings
+const nodeAddress = "t1.hedera.com:50000";
+const nodeAccount = "0.0.3";
+const excalibur = new Excalibur_(nodeAddress, nodeAccount);
+
+// set user settings
+const userAccount = "0.0.***";
+const userPrivateKey = "***";
+
+// create contract settings
+const contractID = "0.0.****";
+const gasValue = "100000";
+const pathToAbi = "smartContracts/excalibur.abi"
+
+const methodName = "trade";
 
 // номер ордера, который мы хотим исполнить
 const arguments = "6";
