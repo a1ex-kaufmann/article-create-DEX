@@ -121,7 +121,7 @@ const pathToFile = "smartContracts/excalibur.bin";
 
 excalibur.createFileFromFile(userAccount,userPrivateKey,pathToFile)
 ```
-ВАЖНО! У файлового сервиса Hedera Hashgraph существует ограничение веса файлов в 6кб. Учтите данное ограничение, очень часто вес байткода получается больше заданного лимита. В таком случае платформа позволяет загружать файл по частям, используя метод: append_file(userAccount, userPrivateKey, fileID, appendText)
+ВАЖНО! У файлового сервиса Hedera Hashgraph существует ограничение веса файлов в 6кб. Учтите данное ограничение, очень часто вес байткода получается больше заданного лимита. В таком случае платформа позволяет загружать файл по частям, для этого используйте метод: append_file(userAccount, userPrivateKey, fileID, appendText)
 
 _В случае успеха функция вернёт специальный номер файла (например, 0.0.1035)._
 
